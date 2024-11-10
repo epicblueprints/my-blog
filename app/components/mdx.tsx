@@ -48,9 +48,14 @@ function RoundedImage(props) {
   return <Image alt={props.alt} className="rounded-lg" {...props} />
 }
 
+
 function Code({ children, ...props }) {
   let codeHTML = highlight(children)
   return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />
+}
+
+function BlockQuote({ children }) {
+  return <blockquote className="border-l-4 border-gray-300 pl-4 italic">{children}</blockquote>;
 }
 
 function slugify(str) {
@@ -82,7 +87,6 @@ function createHeading(level) {
   }
 
   Heading.displayName = `Heading${level}`
-
   return Heading
 }
 
@@ -96,6 +100,7 @@ let components = {
   Image: RoundedImage,
   a: CustomLink,
   code: Code,
+  blockquote: BlockQuote,
   Table,
 }
 
