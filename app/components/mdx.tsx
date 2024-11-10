@@ -48,7 +48,6 @@ function RoundedImage(props) {
   return <Image alt={props.alt} className="rounded-lg" {...props} />
 }
 
-
 function Code({ children, ...props }) {
   let codeHTML = highlight(children)
   return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />
@@ -87,6 +86,7 @@ function createHeading(level) {
   }
 
   Heading.displayName = `Heading${level}`
+
   return Heading
 }
 
