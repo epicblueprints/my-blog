@@ -53,6 +53,10 @@ function Code({ children, ...props }) {
   return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />
 }
 
+function BlockQuote({ children }) {
+  return <blockquote className="border-l-4 border-gray-300 pl-4 italic">{children}</blockquote>;
+}
+
 function slugify(str) {
   return str
     .toString()
@@ -96,6 +100,7 @@ let components = {
   Image: RoundedImage,
   a: CustomLink,
   code: Code,
+  blockquote: BlockQuote,
   Table,
 }
 
