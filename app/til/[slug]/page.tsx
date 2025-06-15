@@ -4,19 +4,19 @@ import { baseUrl } from 'app/sitemap'
 import { PostLayout } from 'app/components/post-layout'
 
 export async function generateStaticParams() {
-  let posts = getTilPosts()
+  const posts = getTilPosts()
   return posts.map((post) => ({
     slug: post.slug,
   }))
 }
 
 export function generateMetadata({ params }) {
-  let post = getTilPosts().find((post) => post.slug === params.slug)
+  const post = getTilPosts().find((post) => post.slug === params.slug)
   if (!post) {
     return
   }
 
-  let {
+  const {
     title,
     publishedAt: publishedTime,
   } = post.metadata
@@ -37,7 +37,7 @@ export function generateMetadata({ params }) {
 }
 
 export default function Til({ params }) {
-  let post = getTilPosts().find((post) => post.slug === params.slug)
+  const post = getTilPosts().find((post) => post.slug === params.slug)
 
   if (!post) {
     notFound()

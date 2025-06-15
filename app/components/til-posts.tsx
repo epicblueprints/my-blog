@@ -3,7 +3,7 @@ import { getTilPosts } from 'app/til/utils'
 import { formatDate } from 'app/lib/mdx'
 
 export function TilPosts() {
-  let allTils = getTilPosts()
+  const allTils = getTilPosts()
 
   return (
     <div className="h-[80vh] overflow-y-auto">

@@ -1,10 +1,9 @@
 import Link from 'next/link'
 import { getBlogPosts } from 'app/blog/utils'
 import { formatDate } from 'app/lib/mdx'
-import { getReadingTime } from 'app/lib/reading-time'
 
 export function BlogPosts() {
-  let allBlogs = getBlogPosts()
+  const allBlogs = getBlogPosts()
 
   return (
     <div className="h-[80vh] overflow-y-auto">

@@ -7,6 +7,9 @@ const navItems = {
   '/blog': {
     name: 'Blog',
   },
+  '/wavelength': {
+    name: 'Wavelength',
+  },
   '/til': {
     name: 'TILs',
   },

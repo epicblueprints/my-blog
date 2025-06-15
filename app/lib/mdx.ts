@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { transformMarkdownToMDX } from './markdown-transformer'
 
 export type Metadata = {
   title: string
@@ -15,15 +16,28 @@ export type Post = {
 }
 
 function parseFrontmatter(fileContent: string) {
-  let frontmatterRegex = /---\s*([\s\S]*?)\s*---/
-  let match = frontmatterRegex.exec(fileContent)
-  let frontMatterBlock = match![1]
-  let content = fileContent.replace(frontmatterRegex, '').trim()
-  let frontMatterLines = frontMatterBlock.trim().split('\n')
-  let metadata: Partial<Metadata> = {}
+  const frontmatterRegex = /---\s*([\s\S]*?)\s*---/
+  const match = frontmatterRegex.exec(fileContent)
+  
+  if (!match) {
+    // No frontmatter found, return default metadata
+    return {
+      metadata: {
+        title: 'Untitled',
+        publishedAt: new Date().toISOString().split('T')[0],
+        summary: ''
+      } as Metadata,
+      content: fileContent.trim()
+    }
+  }
+
+  const frontMatterBlock = match[1]
+  const content = fileContent.replace(frontmatterRegex, '').trim()
+  const frontMatterLines = frontMatterBlock.trim().split('\n')
+  const metadata: Partial<Metadata> = {}
 
   frontMatterLines.forEach((line) => {
-    let [key, ...valueArr] = line.split(': ')
+    const [key, ...valueArr] = line.split(': ')
     let value = valueArr.join(': ').trim()
     value = value.replace(/^['"](.*)['"]$/, '$1') // Remove quotes
     metadata[key.trim() as keyof Metadata] = value
@@ -33,19 +47,29 @@ function parseFrontmatter(fileContent: string) {
 }
 
 function getMDXFiles(dir: string) {
-  return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx')
+  if (!fs.existsSync(dir)) {
+    return []
+  }
+  return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx' && !file.startsWith('.'))
 }
 
 function readMDXFile(filePath: string) {
-  let rawContent = fs.readFileSync(filePath, 'utf-8')
-  return parseFrontmatter(rawContent)
+  const rawContent = fs.readFileSync(filePath, 'utf-8')
+  const { metadata, content } = parseFrontmatter(rawContent)
+  
+  // Transform markdown patterns to MDX components for discovery logs
+  const fileName = path.basename(filePath, '.mdx')
+  const isDiscoveryLog = fileName.includes('discovery_log') || metadata.title?.toLowerCase().includes('discovery log')
+  const transformedContent = isDiscoveryLog ? transformMarkdownToMDX(content, 'discovery-log') : content
+  
+  return { metadata, content: transformedContent }
 }
 
 export function getMDXData(dir: string): Post[] {
-  let mdxFiles = getMDXFiles(dir)
+  const mdxFiles = getMDXFiles(dir)
   return mdxFiles.map((file) => {
-    let { metadata, content } = readMDXFile(path.join(dir, file))
-    let slug = path.basename(file, path.extname(file))
+    const { metadata, content } = readMDXFile(path.join(dir, file))
+    const slug = path.basename(file, path.extname(file))
 
     return {
       metadata,
@@ -56,15 +80,15 @@ export function getMDXData(dir: string): Post[] {
 }
 
 export function formatDate(date: string, includeRelative = false) {
-  let currentDate = new Date()
+  const currentDate = new Date()
   if (!date.includes('T')) {
     date = `${date}T00:00:00`
   }
-  let targetDate = new Date(date)
+  const targetDate = new Date(date)
 
-  let yearsAgo = currentDate.getFullYear() - targetDate.getFullYear()
-  let monthsAgo = currentDate.getMonth() - targetDate.getMonth()
-  let daysAgo = currentDate.getDate() - targetDate.getDate()
+  const yearsAgo = currentDate.getFullYear() - targetDate.getFullYear()
+  const monthsAgo = currentDate.getMonth() - targetDate.getMonth()
+  const daysAgo = currentDate.getDate() - targetDate.getDate()
 
   let formattedDate = ''
 
@@ -78,7 +102,7 @@ export function formatDate(date: string, includeRelative = false) {
     formattedDate = 'Today'
   }
 
-  let fullDate = targetDate.toLocaleString('en-us', {
+  const fullDate = targetDate.toLocaleString('en-us', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',

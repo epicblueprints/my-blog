@@ -1,17 +1,17 @@
 import { notFound } from 'next/navigation'
-import { getBlogPosts } from 'app/blog/utils'
+import { getWavelengthPosts } from 'app/wavelength/utils'
 import { baseUrl } from 'app/sitemap'
 import { PostLayout } from 'app/components/post-layout'
 
 export async function generateStaticParams() {
-  const posts = getBlogPosts()
+  const posts = getWavelengthPosts()
   return posts.map((post) => ({
     slug: post.slug,
   }))
 }
 
 export function generateMetadata({ params }) {
-  const post = getBlogPosts().find((post) => post.slug === params.slug)
+  const post = getWavelengthPosts().find((post) => post.slug === params.slug)
   if (!post) {
     return
   }
@@ -34,7 +34,7 @@ export function generateMetadata({ params }) {
       description,
       type: 'article',
       publishedTime,
-      url: `${baseUrl}/blog/${post.slug}`,
+      url: `${baseUrl}/wavelength/${post.slug}`,
       images: [
         {
           url: ogImage,
@@ -50,8 +50,8 @@ export function generateMetadata({ params }) {
   }
 }
 
-export default function Blog({ params }) {
-  const post = getBlogPosts().find((post) => post.slug === params.slug)
+export default function Wavelength({ params }) {
+  const post = getWavelengthPosts().find((post) => post.slug === params.slug)
 
   if (!post) {
     notFound()
@@ -73,10 +73,10 @@ export default function Blog({ params }) {
             image: post.metadata.image
               ? `${baseUrl}${post.metadata.image}`
               : `/og?title=${encodeURIComponent(post.metadata.title)}`,
-            url: `${baseUrl}/blog/${post.slug}`,
+            url: `${baseUrl}/wavelength/${post.slug}`,
             author: {
               '@type': 'Person',
-              name: 'My Portfolio',
+              name: 'Saurav Ray',
             },
           }),
         }}
@@ -84,4 +84,4 @@ export default function Blog({ params }) {
       <PostLayout post={post} />
     </>
   )
-}
+} 

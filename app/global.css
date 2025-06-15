@@ -148,3 +148,36 @@ table {
 .title {
   text-wrap: balance;
 }
+
+/* TOC Scrollbar Styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-neutral-300 dark:bg-neutral-600 rounded-full;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-400 dark:bg-neutral-500;
+}
+
+.scrollbar-thumb-neutral-300 {
+  scrollbar-color: rgb(212 212 212) transparent;
+}
+
+.dark .scrollbar-thumb-neutral-600 {
+  scrollbar-color: rgb(82 82 82) transparent;
+}
+
+.scrollbar-track-transparent {
+  scrollbar-color: inherit transparent;
+}
