@@ -1,4 +1,5 @@
 import { WavelengthPosts } from 'app/components/wavelength-posts'
+import { MonthlyChecklist } from 'app/components/monthly-checklist'
 
 export const metadata = {
   title: 'Wavelength',
@@ -15,6 +16,7 @@ export default function Page() {
         My monthly rhythm — tracking what I read, watch, listen to, and think about. 
         A personal chronicle of curiosity, frustrations, and discoveries.
       </p>
+      <MonthlyChecklist />
       <WavelengthPosts />
     </section>
   )
