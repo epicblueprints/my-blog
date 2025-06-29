@@ -25,48 +25,38 @@ export function WavelengthPosts() {
     )
   }
 
+  const postsByMonth = allWavelengths
+    .sort((a, b) => new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime())
+    .reduce((acc, post) => {
+      const year = new Date(post.metadata.publishedAt).getFullYear()
+      const month = new Date(post.metadata.publishedAt).getMonth() + 1
+      const monthKey = `${year}/${String(month).padStart(2, '0')}`
+      if (!acc[monthKey]) {
+        acc[monthKey] = []
+      }
+      acc[monthKey].push(post)
+      return acc
+    }, {} as Record<string, typeof allWavelengths>)
+
   return (
     <div className="space-y-6">
-      {allWavelengths
-        .sort((a, b) => {
-          if (
-            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
-          ) {
-            return -1
-          }
-          return 1
-        })
-        .map((post) => (
+      {Object.keys(postsByMonth).map((monthKey) => {
+        const [year, month] = monthKey.split('/')
+        const monthName = new Date(Number(year), Number(month) - 1).toLocaleString('default', { month: 'long', year: 'numeric' })
+        return (
           <Link
-            key={post.slug}
+            key={monthKey}
             className="block group"
-            href={`/wavelength/${post.slug}`}
+            href={`/wavelength/${monthKey}`}
           >
             <article className="border border-neutral-200 dark:border-neutral-700 rounded-lg p-6 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors duration-200">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
-                <h2 className="text-xl font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {post.metadata.title}
-                </h2>
-                <time className="text-sm text-neutral-500 dark:text-neutral-500 mt-1 sm:mt-0">
-                  {formatDate(post.metadata.publishedAt, false)}
-                </time>
-              </div>
-              
-              {post.metadata.summary && (
-                <p className="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
-                  {post.metadata.summary}
-                </p>
-              )}
-              
-              <div className="mt-4 flex items-center text-xs text-neutral-500 dark:text-neutral-500">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-                Read more
-              </div>
+              <h2 className="text-xl font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                {monthName}
+              </h2>
             </article>
           </Link>
-        ))}
+        )
+      })}
     </div>
   )
 } 

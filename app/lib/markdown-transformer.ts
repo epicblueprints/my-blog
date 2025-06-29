@@ -18,7 +18,7 @@ export function transformDiscoveryLogMarkdown(content) {
   // 
   // > Detailed explanation here
   transformed = transformed.replace(
-    /\*\*([0-9]{1,2}:[0-9]{2} (?:AM|PM))\*\* • ([^\n]+)\n\n> ([^<]+?)(?=\n\n|\n*$)/gms,
+    /\*\*([0-9]{1,2}:[0-9]{2} (?:AM|PM))\*\* • ([^\n]+)\n\n> ([^<]+?)(?=\n\n|\n*$)/gm,
     '<LogEntry time="$1" details="$3">$2</LogEntry>'
   );
 

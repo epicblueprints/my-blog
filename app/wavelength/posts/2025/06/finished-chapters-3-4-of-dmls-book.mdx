@@ -1,0 +1,22 @@
+---
+title: "Finished Chapters 5 & 6 of DMLS Book"
+publishedAt: "2025-06-19T23:30:00Z"
+---
+
+Completed reading Chapter 4 (Training Data) & Chapter 3 (Data Engineering Fundamentals) of DMLS book.
+
+Chapter 3: Data Engineering Fundamentals
+- Data sources: User input data (requires careful validation) / system-generated data (logs & system outputs, can grow to large volume) / third-party data (privacy concerns).
+- Data formats: Row major vs Column major (for reading specific columns, especially useful for training ML models) optimized for different use cases
+- Data models: Relational model / Document model (NoSQL, responsibility of handling structure of data is transferred from database to application)
+- Modes of Dataflow: through databases, services (request-driven, data is passed via API calls between microservices), real-time transport (event-driven, message broker like Apache Kafka)
+- Batch Processing & Stream Processing: Batch - processes large amounts of historical data at once. Stream - processes data in real-time as it arrives. Batch processing can be seen as a special case of stream processing
+
+Chapter 4: Training Data
+- Sampling: Often infeasible to handle all possible data. Some methods of sampling are non-probability sampling (based on convenience), probability sampling (includes simple random, stratified (to ensure representation of all classes), weighted sampling)
+- Labeling: Hand labels, natural labels (highly valuable but often have a delayed feedback loop)
+- Lack of labels: Weak Supervision (labeling functions),  Semi-Supervision (uses model's confident predictions to generate more labels for future model training), Transfer learning (model pretrained on a large different dataset as a starting point), active learning (requesting for labels where the model is most uncertain)
+- Class imbalance: upsampling / downsampling, more weight to minority classes in loss function
+- Data Augmentation: to generate more training data. perturbation - adding noise to data to make it more robust to adversarial attacks
+
+*Note* - Gemini-CLI helped in recollecting the chapters.

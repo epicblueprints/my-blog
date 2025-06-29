@@ -50,26 +50,25 @@ function getMDXFiles(dir: string) {
   if (!fs.existsSync(dir)) {
     return []
   }
-  return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx' && !file.startsWith('.'))
+  // Use glob to find all .mdx files recursively
+  const glob = require('glob')
+  const files = glob.sync('**/*.mdx', { cwd: dir })
+  return files
 }
 
 function readMDXFile(filePath: string) {
   const rawContent = fs.readFileSync(filePath, 'utf-8')
   const { metadata, content } = parseFrontmatter(rawContent)
+  return { metadata, content }
   
-  // Transform markdown patterns to MDX components for discovery logs
-  const fileName = path.basename(filePath, '.mdx')
-  const isDiscoveryLog = fileName.includes('discovery_log') || metadata.title?.toLowerCase().includes('discovery log')
-  const transformedContent = isDiscoveryLog ? transformMarkdownToMDX(content, 'discovery-log') : content
   
-  return { metadata, content: transformedContent }
 }
 
 export function getMDXData(dir: string): Post[] {
   const mdxFiles = getMDXFiles(dir)
   return mdxFiles.map((file) => {
     const { metadata, content } = readMDXFile(path.join(dir, file))
-    const slug = path.basename(file, path.extname(file))
+    const slug = file.replace(/\.mdx$/, '')
 
     return {
       metadata,

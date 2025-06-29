@@ -12,7 +12,7 @@ export default function Page() {
         Wavelength
       </h1>
       <p className="text-neutral-600 dark:text-neutral-400 mb-8 text-base">
-        My weekly and monthly rhythm — tracking what I read, watch, listen to, and think about. 
+        My monthly rhythm — tracking what I read, watch, listen to, and think about. 
         A personal chronicle of curiosity, frustrations, and discoveries.
       </p>
       <WavelengthPosts />
