@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getWavelengthPosts } from 'app/wavelength/utils'
-import { formatDate } from 'app/lib/mdx'
+
 
 export function WavelengthPosts() {
   const allWavelengths = getWavelengthPosts()

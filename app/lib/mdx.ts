@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { transformMarkdownToMDX } from './markdown-transformer'
+import { glob } from 'glob'
 
 export type Metadata = {
   title: string
@@ -51,7 +51,6 @@ function getMDXFiles(dir: string) {
     return []
   }
   // Use glob to find all .mdx files recursively
-  const glob = require('glob')
   const files = glob.sync('**/*.mdx', { cwd: dir })
   return files
 }

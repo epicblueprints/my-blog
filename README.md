@@ -58,19 +58,17 @@ npm run build
 npm run start
 ```
 
-## 📁 Project Structure
+## Project Structure
 
-```
-app/
-├── blog/          # Blog posts and pages
-├── wavelength/    # Weekly/monthly activity tracking
-├── til/           # Today I Learned posts  
-├── components/    # Reusable React components
-├── lib/           # Utility functions
-├── layout.tsx     # Root layout
-├── page.tsx       # Homepage
-└── global.css     # Global styles
-```
+The blog is organized into several key directories within the `app/` folder:
+
+- **/blog**: Contains all the long-form blog posts.
+- **/wavelength**: A space for shorter, more frequent updates, organized by month.
+- **/til**: "Today I Learned" posts for capturing quick insights.
+- **/components**: Reusable React components used throughout the site.
+- **/lib**: Utility functions and helpers, including MDX processing.
+
+The main pages and layout are defined in `app/page.tsx` and `app/layout.tsx`.
 
 ## 🛠️ Common Development Tasks
 

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { getWavelengthPosts } from 'app/wavelength/utils'
 import { WavelengthPostLayout } from 'app/components/wavelength-post-layout'
 import { formatDate } from 'app/lib/mdx'
-import Link from 'next/link'
+
 
 export async function generateStaticParams() {
   const posts = getWavelengthPosts()
