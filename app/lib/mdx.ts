@@ -64,32 +64,7 @@ function parseChecklistContent(content: string): ChecklistTopic[] {
   let currentTopic: ChecklistTopic | null = null
   const lines = content.split('\n')
 
-  const parseItem = (line: string, level: number, parentItems: ChecklistItem[]): ChecklistItem | null => {
-    const match = line.match(/^(- \[([x ])\]\s*)(.*)/)
-    if (match) {
-      const completed = match[2] === 'x'
-      const text = match[3].trim()
-      const id = `${text}-${Date.now()}-${Math.random()}` // Simple unique ID
-      const newItem: ChecklistItem = { id, text, completed }
 
-      const lastParentItem = parentItems[parentItems.length - 1]
-
-      if (level === 0) {
-        if (currentTopic) {
-          currentTopic.items.push(newItem)
-        }
-      } else {
-        if (lastParentItem) {
-          if (!lastParentItem.subItems) {
-            lastParentItem.subItems = []
-          }
-          lastParentItem.subItems.push(newItem)
-        }
-      }
-      return newItem
-    }
-    return null
-  }
 
   let itemStack: { item: ChecklistItem; level: number }[] = []
 

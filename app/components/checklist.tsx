@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 interface ChecklistItem {
   id: string
@@ -34,10 +35,12 @@ export function Checklist({ topics }: { topics: ChecklistTopic[] }) {
     return (
       <li key={item.id} className={`mb-1 ml-${level * 4}`}>
         <div className="flex items-center">
-          <img
+          <Image
             src={item.completed ? '/images/checked-box.svg' : '/images/unchecked-box.svg'}
             alt={item.completed ? 'Checked' : 'Unchecked'}
             className="mr-2 w-4 h-4"
+            width={16}
+            height={16}
           />
           <span
             className={`text-neutral-700 dark:text-neutral-300 ${

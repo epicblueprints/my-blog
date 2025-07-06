@@ -3,7 +3,7 @@ import { getNotesPosts } from 'app/notes/utils'
 import { NotesPostLayout } from 'app/components/notes-post-layout'
 import { formatDate } from 'app/lib/mdx'
 import { Checklist } from 'app/components/checklist'
-import { readMDXFile } from 'app/lib/mdx'
+import { readMDXFile, ChecklistTopic } from 'app/lib/mdx'
 import path from 'path'
 import fs from 'fs'
 
@@ -25,7 +25,7 @@ export async function generateStaticParams() {
   }))
 }
 
-export function generateMetadata({ params }) {
+export function generateMetadata({ params }: { params: { slug: string[] } }) {
   const { slug } = params
   const [year, month] = slug
   const monthName = new Date(Number(year), Number(month) - 1).toLocaleString('default', { month: 'long', year: 'numeric' })
@@ -36,7 +36,7 @@ export function generateMetadata({ params }) {
   }
 }
 
-export default function NotesMonthPage({ params }) {
+export default function NotesMonthPage({ params }: { params: { slug: string[] } }) {
   const { slug } = params
   const [year, month] = slug
   const posts = getNotesPosts()
@@ -53,7 +53,7 @@ export default function NotesMonthPage({ params }) {
 
   const monthName = new Date(Number(year), Number(month) - 1).toLocaleString('default', { month: 'long', year: 'numeric' })
   
-  let checklistData: any[] = []
+  let checklistData: ChecklistTopic[] = []
   const checklistFilePath = path.join(process.cwd(), 'app', 'notes', 'posts', year, month, 'checklist.mdx')
   if (fs.existsSync(checklistFilePath)) {
     const { checklist } = readMDXFile(checklistFilePath)
