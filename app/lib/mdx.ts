@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { glob } from 'glob'
 
 export type Metadata = {
   title: string
@@ -9,10 +8,24 @@ export type Metadata = {
   image?: string
 }
 
+export interface ChecklistItem {
+  id: string
+  text: string
+  completed: boolean
+  subItems?: ChecklistItem[]
+}
+
+export interface ChecklistTopic {
+  id: string
+  title: string
+  items: ChecklistItem[]
+}
+
 export type Post = {
   metadata: Metadata
   slug: string
   content: string
+  checklist?: ChecklistTopic[]
 }
 
 function parseFrontmatter(fileContent: string) {
@@ -24,7 +37,7 @@ function parseFrontmatter(fileContent: string) {
     return {
       metadata: {
         title: 'Untitled',
-        publishedAt: new Date().toISOString().split('T')[0],
+        publishedAt: new Date().toISOString(), // Default to current date and time
         summary: ''
       } as Metadata,
       content: fileContent.trim()
@@ -46,33 +59,132 @@ function parseFrontmatter(fileContent: string) {
   return { metadata: metadata as Metadata, content }
 }
 
-function getMDXFiles(dir: string) {
+function parseChecklistContent(content: string): ChecklistTopic[] {
+  const topics: ChecklistTopic[] = []
+  let currentTopic: ChecklistTopic | null = null
+  const lines = content.split('\n')
+
+  const parseItem = (line: string, level: number, parentItems: ChecklistItem[]): ChecklistItem | null => {
+    const match = line.match(/^(- \[([x ])\]\s*)(.*)/)
+    if (match) {
+      const completed = match[2] === 'x'
+      const text = match[3].trim()
+      const id = `${text}-${Date.now()}-${Math.random()}` // Simple unique ID
+      const newItem: ChecklistItem = { id, text, completed }
+
+      const lastParentItem = parentItems[parentItems.length - 1]
+
+      if (level === 0) {
+        if (currentTopic) {
+          currentTopic.items.push(newItem)
+        }
+      } else {
+        if (lastParentItem) {
+          if (!lastParentItem.subItems) {
+            lastParentItem.subItems = []
+          }
+          lastParentItem.subItems.push(newItem)
+        }
+      }
+      return newItem
+    }
+    return null
+  }
+
+  let itemStack: { item: ChecklistItem; level: number }[] = []
+
+  lines.forEach((line) => {
+    const trimmedLine = line.trim()
+    const indentLevel = line.search(/\S|$/)
+
+    if (trimmedLine.startsWith('# ')) {
+      if (currentTopic) {
+        topics.push(currentTopic)
+      }
+      currentTopic = {
+        id: trimmedLine.substring(2).trim().replace(/\s/g, '-').toLowerCase(),
+        title: trimmedLine.substring(2).trim(),
+        items: [],
+      }
+      itemStack = [] // Reset item stack for new topic
+    } else if (currentTopic && trimmedLine.match(/^- \[([x ])\]/)) {
+      const match = trimmedLine.match(/^(- \[([x ])\]\s*)(.*)/)
+      if (!match) return
+
+      const completed = match[2] === 'x'
+      const text = match[3] ? match[3].trim() : ''
+      const id = `${text}-${Date.now()}-${Math.random()}`.replace(/\s/g, '-') // Simple unique ID
+      const newItem: ChecklistItem = { id, text, completed }
+
+      const currentLevel = indentLevel
+
+      while (itemStack.length > 0 && itemStack[itemStack.length - 1].level >= currentLevel) {
+        itemStack.pop()
+      }
+
+      if (itemStack.length > 0) {
+        const parentItem = itemStack[itemStack.length - 1].item
+        if (!parentItem.subItems) {
+          parentItem.subItems = []
+        }
+        parentItem.subItems.push(newItem)
+      } else {
+        currentTopic.items.push(newItem)
+      }
+      itemStack.push({ item: newItem, level: currentLevel })
+    }
+  })
+
+  if (currentTopic) {
+    topics.push(currentTopic)
+  }
+  return topics
+}
+
+function getMDXFiles(dir: string): string[] {
   if (!fs.existsSync(dir)) {
     return []
   }
-  // Use glob to find all .mdx files recursively
-  const files = glob.sync('**/*.mdx', { cwd: dir })
+  
+  const files: string[] = []
+  
+  function readDirRecursive(currentDir: string, relativePath = '') {
+    const entries = fs.readdirSync(currentDir, { withFileTypes: true })
+    
+    for (const entry of entries) {
+      const fullPath = path.join(currentDir, entry.name)
+      const relativeFilePath = relativePath ? path.join(relativePath, entry.name) : entry.name
+      
+      if (entry.isDirectory()) {
+        readDirRecursive(fullPath, relativeFilePath)
+      } else if (entry.isFile() && entry.name.endsWith('.mdx')) {
+        files.push(relativeFilePath)
+      }
+    }
+  }
+  
+  readDirRecursive(dir)
   return files
 }
 
-function readMDXFile(filePath: string) {
+export function readMDXFile(filePath: string) {
   const rawContent = fs.readFileSync(filePath, 'utf-8')
   const { metadata, content } = parseFrontmatter(rawContent)
-  return { metadata, content }
-  
-  
+  const checklist = parseChecklistContent(content) // Parse checklist content
+  return { metadata, content, checklist }
 }
 
 export function getMDXData(dir: string): Post[] {
   const mdxFiles = getMDXFiles(dir)
   return mdxFiles.map((file) => {
-    const { metadata, content } = readMDXFile(path.join(dir, file))
+    const { metadata, content, checklist } = readMDXFile(path.join(dir, file))
     const slug = file.replace(/\.mdx$/, '')
 
     return {
       metadata,
       slug,
       content,
+      checklist,
     }
   })
 }
@@ -111,4 +223,4 @@ export function formatDate(date: string, includeRelative = false) {
   }
 
   return `${fullDate} (${formattedDate})`
-} 
+}

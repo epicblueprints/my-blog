@@ -7,8 +7,8 @@ const navItems = {
   '/blog': {
     name: 'Blog',
   },
-  '/wavelength': {
-    name: 'Wavelength',
+  '/notes': {
+    name: 'Notes',
   },
   '/til': {
     name: 'TILs',

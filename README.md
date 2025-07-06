@@ -63,7 +63,7 @@ npm run start
 The blog is organized into several key directories within the `app/` folder:
 
 - **/blog**: Contains all the long-form blog posts.
-- **/wavelength**: A space for shorter, more frequent updates, organized by month.
+- **/notes**: A space for shorter, more frequent updates, organized by month.
 - **/til**: "Today I Learned" posts for capturing quick insights.
 - **/components**: Reusable React components used throughout the site.
 - **/lib**: Utility functions and helpers, including MDX processing.
@@ -79,8 +79,8 @@ The main pages and layout are defined in `app/page.tsx` and `app/layout.tsx`.
 2. Add your content in MDX format
 3. Test locally with `npm run dev`
 
-#### New Wavelength Entry (Discovery Log)
-1. Create a new file in `app/wavelength/posts/` with format: `month_year_discovery_log.mdx`
+#### New Notes Entry (Discovery Log)
+1. Create a new file in `app/notes/posts/` with format: `month_year_discovery_log.mdx`
 2. Keep the file open and append color-coded entries as you discover things
 3. Test locally with `npm run dev`
 
@@ -89,8 +89,8 @@ After running `npm run dev`, visit:
 - Homepage: `http://localhost:3000`
 - Blog list: `http://localhost:3000/blog`
 - Your new article: `http://localhost:3000/blog/modern_web_development_guide`
-- **Wavelength section**: `http://localhost:3000/wavelength`
-- Sample discovery log: `http://localhost:3000/wavelength/december_2024_discovery_log`
+- **Notes section**: `http://localhost:3000/notes`
+- Sample discovery log: `http://localhost:3000/notes/december_2024_discovery_log`
 
 ### Article Features
 Your new comprehensive article includes:

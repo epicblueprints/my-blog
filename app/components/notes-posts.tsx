@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import { getWavelengthPosts } from 'app/wavelength/utils'
+import { getNotesPosts } from 'app/notes/utils'
 
 
-export function WavelengthPosts() {
-  const allWavelengths = getWavelengthPosts()
+export function NotesPosts() {
+  const allNotes = getNotesPosts()
 
-  if (allWavelengths.length === 0) {
+  if (allNotes.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="max-w-md mx-auto">
@@ -15,7 +15,7 @@ export function WavelengthPosts() {
             </svg>
           </div>
           <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
-            No wavelengths yet
+            No notes yet
           </h3>
           <p className="text-neutral-600 dark:text-neutral-400">
             Start documenting your weekly rhythm - what you&apos;re reading, watching, and thinking about.
@@ -25,7 +25,7 @@ export function WavelengthPosts() {
     )
   }
 
-  const postsByMonth = allWavelengths
+  const postsByMonth = allNotes
     .sort((a, b) => new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime())
     .reduce((acc, post) => {
       const year = new Date(post.metadata.publishedAt).getFullYear()
@@ -36,7 +36,7 @@ export function WavelengthPosts() {
       }
       acc[monthKey].push(post)
       return acc
-    }, {} as Record<string, typeof allWavelengths>)
+    }, {} as Record<string, typeof allNotes>)
 
   return (
     <div className="space-y-6">
@@ -47,7 +47,7 @@ export function WavelengthPosts() {
           <Link
             key={monthKey}
             className="block group"
-            href={`/wavelength/${monthKey}`}
+            href={`/notes/${monthKey}`}
           >
             <article className="border border-neutral-200 dark:border-neutral-700 rounded-lg p-6 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors duration-200">
               <h2 className="text-xl font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
